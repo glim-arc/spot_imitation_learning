@@ -1,0 +1,40 @@
+source /opt/ros/noetic/setup.bash
+rosbag info data.bag
+
+
+path:        library2pond_spot.bag
+version:     2.0
+duration:    2:48s (168s)
+start:       Nov 08 2021 10:09:50.23 (1636384190.23)
+end:         Nov 08 2021 10:12:39.10 (1636384359.10)
+size:        1.6 GB
+messages:    52101
+compression: none [1705/1705 chunks]
+types:       amrl_msgs/Localization2DMsg [4ce450daa8564e2fb59b919aebbbe26e]
+             geometry_msgs/Twist         [9f195f881246fdfa2798d1d3eebca84a]
+             nav_msgs/Odometry           [cd5e73d190d741a2f92e81eda573aca7]
+             sensor_msgs/CameraInfo      [c9a58c1b0b154e0e6da7578cb991d214]
+             sensor_msgs/CompressedImage [8f7a12909da2c9d3332d540a0977563f]
+             sensor_msgs/JointState      [3066dcd76a6cfaef579bd0f34173e9fd]
+             sensor_msgs/Joy             [5a9ea5f83505693b71e785041e67a8bb]
+             sensor_msgs/LaserScan       [90c7ef2dc6895d81024acba2ac42f369]
+             sensor_msgs/PointCloud2     [1158d486dd51d683ce2f1be655c3c181]
+             tf2_msgs/TFMessage          [94810edda583a504dfda3829e70d7eec]
+topics:      /image_raw/compressed                       5012 msgs    : sensor_msgs/CompressedImage
+             /joint_states                               2761 msgs    : sensor_msgs/JointState     
+             /joystick                                  10002 msgs    : sensor_msgs/Joy            
+             /localization                               2763 msgs    : amrl_msgs/Localization2DMsg
+             /navigation/cmd_vel                         6754 msgs    : geometry_msgs/Twist        
+             /odom                                       2761 msgs    : nav_msgs/Odometry          
+             /scan                                       1675 msgs    : sensor_msgs/LaserScan      
+             /spot/camera/back/camera_info                755 msgs    : sensor_msgs/CameraInfo     
+             /spot/camera/back/image/compressed           755 msgs    : sensor_msgs/CompressedImage
+             /spot/camera/frontleft/camera_info           754 msgs    : sensor_msgs/CameraInfo     
+             /spot/camera/frontleft/image/compressed      754 msgs    : sensor_msgs/CompressedImage
+             /spot/camera/frontright/camera_info          754 msgs    : sensor_msgs/CameraInfo     
+             /spot/camera/frontright/image/compressed     754 msgs    : sensor_msgs/CompressedImage
+             /spot/camera/left/camera_info                754 msgs    : sensor_msgs/CameraInfo     
+             /spot/camera/left/image/compressed           754 msgs    : sensor_msgs/CompressedImage
+             /spot/camera/right/camera_info               754 msgs    : sensor_msgs/CameraInfo     
+             /spot/camera/right/image/compressed          754 msgs    : sensor_msgs/CompressedImage
+             /tf                                        11156 msgs    : tf2_msgs/TFMessage 
