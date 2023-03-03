@@ -4,6 +4,10 @@
 -       Setup a visualization of SCAND Dataset [1]
 -       Train the spot robot imitation learning policy to navigate using only RGBD
 
+Data parsing:
+Inside the data directory, make a bag directory and put the bag files there. run data_parser.py outside and the parsed data will be created in the bag directory.
+Please check the requirement.txt in the data folder to meet the requirement.
+
 Paper:
 https://www.cs.utexas.edu/~xiao/papers/scand.pdf
 

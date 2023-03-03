@@ -1,6 +1,9 @@
 source /opt/ros/noetic/setup.bash
 rosbag info data.bag
 
+sensor_msgs/Joy
+rostopic echo -b library2pond_spot.bag -p /sensor_msgs/Joy>sensor_msgs/Joy.csv
+
 
 path:        library2pond_spot.bag
 version:     2.0
