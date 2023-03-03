@@ -15,9 +15,27 @@ from cv_bridge import CvBridge
 def main():
     """Extract a folder of images from a rosbag.
     """
-    parser = argparse.ArgumentParser(description="Extract images from a ROS bag.")
-    parser.add_argument("bag_file",type=str, default='./library2pond_spot.bag',  help="Input ROS bag.")
-    parser.add_argument("output_dir", type=str, default='./output', help="Output directory.")
+
+    current_path = os.getcwd()
+
+    output_path = "./output"
+
+    if not os.path.isdir(output_path):
+            os.makedirs(output_path, exist_ok=True)
+    else:
+        idx = 1
+        while os.path.isdir("./output"+str(idx)):
+            idx += 1
+        
+        output_path = "./output"+ str(idx)
+        os.makedirs(output_path, exist_ok=True)
+
+    bagfilelist= None
+
+    for (root, directories, files) in os.walk("./bag"):
+        bagfilelist = files
+
+    print(bagfilelist)
 
     imgtopics = ["/spot/camera/back/image/compressed",
              "/spot/camera/frontleft/image/compressed",
@@ -28,32 +46,52 @@ def main():
     joystick_input = ["/joystick"]
     localization = ["/localization"]
 
-    args = parser.parse_args()
+    for file in bagfilelist:
+        bag = rosbag.Bag("./bag/" + file, "r")
+        bridge = CvBridge()
 
-    bag = rosbag.Bag(args.bag_file, "r")
-    bridge = CvBridge()
-    count = 0
-    
-    for savedtopic in imgtopics:
-        print(savedtopic)
+        bagidx  = file.find(".bag")
 
-        camloc = savedtopic.find("/spot/camera/")
-        lastidx = camloc
-        while camloc[lastidx] != '/':
-            lastidx += 1
+        curdir = output_path + "/" + file[:bagidx]
 
-        curdir = "./" + savedtopic[camloc+1:lastidx]
-        os.makedirs(curdir)
+        if not os.path.isdir(file[:bagidx]):
+            os.makedirs(curdir, exist_ok=True)
 
-        for topic, msg, t in bag.read_messages(topics=[savedtopic]):
-            cv_img = bridge.imgmsg_to_cv2(msg, desired_encoding="passthrough")
+        for savedtopic in imgtopics:
+            print(savedtopic)
+            count = 0
 
-            cv2.imwrite(os.path.join(curdir, "frame%06i.png" % count), cv_img)
-            print("Wrote image %i" % count)
+            camloc = savedtopic.find("/spot/camera/")+12
+            lastidx = camloc
 
-            count += 1
+            while savedtopic[lastidx+1] != '/':
+                lastidx += 1
 
-    bag.close()
+            campos = savedtopic[camloc:lastidx+1]
+
+            curcamdir = curdir + savedtopic[camloc:lastidx+1]
+            print("dir", curcamdir)
+
+            if not os.path.isdir(curcamdir):
+                os.makedirs(curcamdir)
+
+            print(campos)
+            for topic, msg, t in bag.read_messages(topics=[savedtopic]):
+                cv_img = bridge.compressed_imgmsg_to_cv2(msg, desired_encoding="passthrough")
+
+                if campos == "/frontleft":
+                    cv_img = cv2.rotate(cv_img, cv2.ROTATE_90_CLOCKWISE)
+                elif campos == "/frontright":
+                    cv_img = cv2.rotate(cv_img, cv2.ROTATE_90_CLOCKWISE)
+                elif campos == "/right":
+                    cv_img = cv2.rotate(cv_img, cv2.ROTATE_180)
+
+                cv2.imwrite(os.path.join(curcamdir, "%i.png" % count), cv_img)
+                count += 1
+            
+            print("Wrote image " + str(count) +  " at " + curcamdir)
+
+        bag.close()
 
     return
 
