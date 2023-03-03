@@ -70,7 +70,7 @@ def main():
             bmesg = b.message_by_topic(savedtopic)
 
         for savedtopic in imgtopics:
-            # in csv
+            # save in csv
             #bmesg = b.message_by_topic(savedtopic)
 
             print(savedtopic)
