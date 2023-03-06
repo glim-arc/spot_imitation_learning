@@ -122,10 +122,7 @@ def main():
 
         if depth_calc == True:
             #left
-            Depth(curdir + "/depth_left", left, frontleft)
-
-            #right
-            Depth(curdir+ "/depth_right", right, frontright)
+            Depth(curdir + "/depth", frontleft, frontright)
 
     return
 
