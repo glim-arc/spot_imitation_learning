@@ -4,9 +4,6 @@
 """
 
 import os
-import argparse
-
-import cv2
 import cv2
 import numpy as np
 import rospy 
@@ -15,6 +12,9 @@ import rosbag
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from bagpy import bagreader
+from depth import Depth
+
+depth_calc = True
 
 def main():
     """Extract a folder of images from a rosbag.
@@ -69,6 +69,11 @@ def main():
         for savedtopic in other_topics:
             bmesg = b.message_by_topic(savedtopic)
 
+        right = []
+        left = []
+        frontleft = []
+        frontright = []
+
         for savedtopic in imgtopics:
             # save in csv
             #bmesg = b.message_by_topic(savedtopic)
@@ -96,10 +101,15 @@ def main():
                 
                 if campos == "/frontleft":
                     cv_img = cv2.rotate(cv_img, cv2.ROTATE_90_CLOCKWISE)
+                    frontleft.append(cv_img)
                 elif campos == "/frontright":
                     cv_img = cv2.rotate(cv_img, cv2.ROTATE_90_CLOCKWISE)
+                    frontright.append(cv_img)
                 elif campos == "/right":
                     cv_img = cv2.rotate(cv_img, cv2.ROTATE_180)
+                    right.append(cv_img)
+                elif campos == "/left":
+                    left.append(cv_img)
 
                 time = float(t.secs) + float(t.nsecs)*(1e-9)
                 time = round(time, 6)
@@ -107,9 +117,15 @@ def main():
                 cv2.imwrite(os.path.join(curcamdir, "%f.png" % time), cv_img)
                 count += 1
             
-            print("Wrote image " + str(count) +  " at " + curcamdir)
 
         bag.close()
+
+        if depth_calc == True:
+            #left
+            Depth(curdir + "/depth_left", left, frontleft)
+
+            #right
+            Depth(curdir+ "/depth_right", right, frontright)
 
     return
 
