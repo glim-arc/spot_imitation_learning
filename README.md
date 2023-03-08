@@ -3,6 +3,7 @@
 -       Process RGBD data to extract humans in the scene
 -       Setup a visualization of SCAND Dataset [1]
 -       Train the spot robot imitation learning policy to navigate using only RGBD
+-       Process depth from the stereo
 
 Data parsing:
 Inside the data directory, make a bag directory and put the bag files there. run data_parser.py outside and the parsed data will be created in the bag directory.
