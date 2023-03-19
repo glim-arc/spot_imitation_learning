@@ -13,8 +13,17 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from bagpy import bagreader
 from depth import Depth
+from sensor_msgs.msg import LaserScan
+import laser_geometry.laser_geometry as lg
+import open3d
+import numpy as np
+from ctypes import * # convert float to uint32
+from sensor_msgs.msg import PointCloud2, PointField
+import sensor_msgs.point_cloud2 as pc2
+
 
 depth_calc = True
+visualization = False
 
 def main():
     """Extract a folder of images from a rosbag.
@@ -53,6 +62,8 @@ def main():
     
     other_topics = ["/joystick", "/localization", "/joint_states", "/odom", "/navigation/cmd_vel"]
 
+    lidar_topic = "/velodyne_points"
+
     for file in bagfilelist:
         bag = rosbag.Bag("./bag/" + file, "r")
         bridge = CvBridge()
@@ -68,6 +79,44 @@ def main():
 
         for savedtopic in other_topics:
             bmesg = b.message_by_topic(savedtopic)
+
+        #parse LiDAR scan
+        cnt = 0
+        curcloud = open3d.geometry.PointCloud()
+        lp = lg.LaserProjection()
+        
+        for topic, msg, t in bag.read_messages(lidar_topic):
+            # Get cloud data from ros_cloud
+            cloud_data = list(pc2.read_points_list(msg))
+
+            # Check empty
+            if len(cloud_data) == 0:
+                print("Empty")
+                break
+
+            xyz = [(x, y, z) for x, y, z, intensity, ring, time  in cloud_data]  # get xyz
+
+            if cnt == 10:
+                cnt = 0
+                if visualization == True:
+                    open3d.visualization.draw_geometries([curcloud])
+                else:
+                    time = float(t.secs) + float(t.nsecs)*(1e-9)
+                    time = round(time, 6)
+                    curpcldir = curdir + lidar_topic
+
+                    if not os.path.isdir(curpcldir):
+                        os.makedirs(curpcldir)
+
+                    curpcldir += "/" + str(time) + '.pcd'
+
+                    open3d.io.write_point_cloud(curpcldir, curcloud)
+
+                curcloud = open3d.geometry.PointCloud()
+                curcloud.points = open3d.utility.Vector3dVector(np.array(xyz))
+            else:
+                curcloud.points.extend(np.array(xyz))
+                cnt += 1
 
         right = []
         left = []

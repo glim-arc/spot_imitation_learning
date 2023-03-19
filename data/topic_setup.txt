@@ -4,15 +4,14 @@ rosbag info data.bag
 sensor_msgs/Joy
 rostopic echo -b library2pond_spot.bag -p /sensor_msgs/Joy>sensor_msgs/Joy.csv
 
-
-path:        library2pond_spot.bag
+path:        A_Spot_Jester_Jester_Wed_Nov_10_64.bag
 version:     2.0
-duration:    2:48s (168s)
-start:       Nov 08 2021 10:09:50.23 (1636384190.23)
-end:         Nov 08 2021 10:12:39.10 (1636384359.10)
-size:        1.6 GB
-messages:    52101
-compression: none [1705/1705 chunks]
+duration:    1:45s (105s)
+start:       Nov 10 2021 13:57:47.21 (1636570667.21)
+end:         Nov 10 2021 13:59:32.91 (1636570772.91)
+size:        911.4 MB
+messages:    32281
+compression: none [1037/1037 chunks]
 types:       amrl_msgs/Localization2DMsg [4ce450daa8564e2fb59b919aebbbe26e]
              geometry_msgs/Twist         [9f195f881246fdfa2798d1d3eebca84a]
              nav_msgs/Odometry           [cd5e73d190d741a2f92e81eda573aca7]
@@ -23,21 +22,23 @@ types:       amrl_msgs/Localization2DMsg [4ce450daa8564e2fb59b919aebbbe26e]
              sensor_msgs/LaserScan       [90c7ef2dc6895d81024acba2ac42f369]
              sensor_msgs/PointCloud2     [1158d486dd51d683ce2f1be655c3c181]
              tf2_msgs/TFMessage          [94810edda583a504dfda3829e70d7eec]
-topics:      /image_raw/compressed                       5012 msgs    : sensor_msgs/CompressedImage
-             /joint_states                               2761 msgs    : sensor_msgs/JointState     
-             /joystick                                  10002 msgs    : sensor_msgs/Joy            
-             /localization                               2763 msgs    : amrl_msgs/Localization2DMsg
-             /navigation/cmd_vel                         6754 msgs    : geometry_msgs/Twist        
-             /odom                                       2761 msgs    : nav_msgs/Odometry          
-             /scan                                       1675 msgs    : sensor_msgs/LaserScan      
-             /spot/camera/back/camera_info                755 msgs    : sensor_msgs/CameraInfo     
-             /spot/camera/back/image/compressed           755 msgs    : sensor_msgs/CompressedImage
-             /spot/camera/frontleft/camera_info           754 msgs    : sensor_msgs/CameraInfo     
-             /spot/camera/frontleft/image/compressed      754 msgs    : sensor_msgs/CompressedImage
-             /spot/camera/frontright/camera_info          754 msgs    : sensor_msgs/CameraInfo     
-             /spot/camera/frontright/image/compressed     754 msgs    : sensor_msgs/CompressedImage
-             /spot/camera/left/camera_info                754 msgs    : sensor_msgs/CameraInfo     
-             /spot/camera/left/image/compressed           754 msgs    : sensor_msgs/CompressedImage
-             /spot/camera/right/camera_info               754 msgs    : sensor_msgs/CameraInfo     
-             /spot/camera/right/image/compressed          754 msgs    : sensor_msgs/CompressedImage
-             /tf                                        11156 msgs    : tf2_msgs/TFMessage 
+topics:      /image_raw/compressed                      3115 msgs    : sensor_msgs/CompressedImage
+             /joint_states                              1733 msgs    : sensor_msgs/JointState     
+             /joystick                                  5923 msgs    : sensor_msgs/Joy            
+             /localization                              1734 msgs    : amrl_msgs/Localization2DMsg
+             /navigation/cmd_vel                        4229 msgs    : geometry_msgs/Twist        
+             /odom                                      1733 msgs    : nav_msgs/Odometry          
+             /scan                                      1048 msgs    : sensor_msgs/LaserScan      
+             /spot/camera/back/camera_info               473 msgs    : sensor_msgs/CameraInfo     
+             /spot/camera/back/image/compressed          473 msgs    : sensor_msgs/CompressedImage
+             /spot/camera/frontleft/camera_info          473 msgs    : sensor_msgs/CameraInfo     
+             /spot/camera/frontleft/image/compressed     474 msgs    : sensor_msgs/CompressedImage
+             /spot/camera/frontright/camera_info         473 msgs    : sensor_msgs/CameraInfo     
+             /spot/camera/frontright/image/compressed    474 msgs    : sensor_msgs/CompressedImage
+             /spot/camera/left/camera_info               473 msgs    : sensor_msgs/CameraInfo     
+             /spot/camera/left/image/compressed          473 msgs    : sensor_msgs/CompressedImage
+             /spot/camera/right/camera_info              473 msgs    : sensor_msgs/CameraInfo     
+             /spot/camera/right/image/compressed         473 msgs    : sensor_msgs/CompressedImage
+             /tf                                        6986 msgs    : tf2_msgs/TFMessage          (2 connections)
+             /velodyne_points                           1048 msgs    : sensor_msgs/PointCloud2
+
