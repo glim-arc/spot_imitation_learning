@@ -5,27 +5,27 @@
 -       Train the spot robot imitation learning policy to navigate using only RGBD
 -       Process depth from the stereo
 
+Paper:
+https://www.cs.utexas.edu/~xiao/papers/scand.pdf
+
+SCAND website:
+https://www.cs.utexas.edu/~xiao/SCAND/SCAND.html
+
+Dataset:
+https://dataverse.tdl.org/dataset.xhtml?persistentId=doi:10.18738/T8/0PRYRH
 
 ## Data parsing:
 Inside the data directory, make a bag directory and put the bag files there. run data_parser.py outside and the parsed data will be created in the bag directory.
 Please check the requirement.txt in the data folder to meet the requirement. 
 
 -       python data_parser.py
--       python depth_parser.py 
-
-Paper:
-https://www.cs.utexas.edu/~xiao/papers/scand.pdf
-
-Website:
-https://www.cs.utexas.edu/~xiao/SCAND/SCAND.html
-
-Dataset:
-https://dataverse.tdl.org/dataset.xhtml?persistentId=doi:10.18738/T8/0PRYRH
-
+-       python depth_parser.py
 
 ## Simulation tools for Boston Dynamics' Spot
 
 The Spot package, model and basic control inputs, is based on [SpotMicro project](https://github.com/OpenQuadruped/spot_mini_mini) and [SpotControl](https://github.com/SoftServeSAG/spot_simulation/tree/spot_control)
+
+All the simulation files are located under the sim directory.
 
 ### Installation
 This simulation uses ROS-Noetic and Gazebo. You will need to have a catkin_ws 
