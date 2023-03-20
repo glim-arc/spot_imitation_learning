@@ -1,9 +1,9 @@
 # rgbdspotnav
 
--       Process RGBD data to extract humans in the scene
--       Setup a visualization of SCAND Dataset [1]
--       Train the spot robot imitation learning policy to navigate using only RGBD
--       Process depth from the stereo
+1. Process RGBD data to extract humans in the scene 
+2. Setup a visualization of SCAND Dataset [1]
+3. Train the spot robot imitation learning policy to navigate using only RGBD 
+4. Process depth from the stereo
 
 Paper:
 https://www.cs.utexas.edu/~xiao/papers/scand.pdf
@@ -25,12 +25,12 @@ Please check the requirement.txt in the data folder to meet the requirement.
 
 The Spot package, model and basic control inputs, is based on [SpotMicro project](https://github.com/OpenQuadruped/spot_mini_mini) and [SpotControl](https://github.com/SoftServeSAG/spot_simulation/tree/spot_control)
 
-All the simulation files are located under the sim directory.
+All the simulation files are located under the spot_ws directory.
 
 ### Installation
-This simulation uses ROS-Noetic and Gazebo. You will need to have a catkin_ws 
-
-Run catkin_make and source devel/setup.bash before starting simulation 
+This simulation uses ROS-Noetic and Gazebo. You will need to have a catkin_ws
+Run catkin_make and source devel/setup.bash before starting simulation
+Relocate the spot_ws inside the src folder inside your catkin workspace
 
 ### Start world in Gazebo
 ```bash

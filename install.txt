@@ -5,3 +5,6 @@ conda install -c conda-forge ros-rosbag
 pip install opencv-python
 conda install -c conda-forge ros-cv-bridge
 pip install open3d
+
+sudo apt install python-is-python3
+export PYTHONPATH="/opt/ros/noetic/lib/python3.8/dist-packages:$PYTHONPATH"
