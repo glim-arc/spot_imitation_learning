@@ -1,0 +1,158 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+   <world name="default">
+      <!-- A ground plane -->
+      <include>
+         <uri>model://ground_plane</uri>
+      </include>
+      <!-- A global light source -->
+      <include>
+         <uri>model://sun</uri>
+      </include>
+      <actor name="actor1">
+         <!-- xpos, ypos, xpos, xrot, yrot, zrot -->
+         <pose>0 0 0 0 0 0</pose>
+         <skin>
+            <filename>walk.dae</filename>
+            <scale>1.0</scale>
+         </skin>
+         <animation name="walking">
+            <filename>walk.dae</filename>
+            <scale>1.000000</scale>
+            <interpolate_x>true</interpolate_x>
+         </animation>
+         <script>
+            <trajectory id="0" type="walking">
+               <waypoint>
+                  <time>0</time>
+                  <pose>0 2 0 0 0 -1.57</pose>
+               </waypoint>
+               <waypoint>
+                  <time>2</time>
+                  <pose>0 -2 0 0 0 -1.57</pose>
+               </waypoint>
+               <waypoint>
+                  <time>4</time>
+                  <pose>0 -2 0 0 0 1.57</pose>
+               </waypoint>
+               <waypoint>
+                  <time>6</time>
+                  <pose>0 2 0 0 0 1.57</pose>
+               </waypoint>
+               <waypoint>
+                  <time>8</time>
+                  <pose>0 2 0 0 0 -1.57</pose>
+               </waypoint>
+            </trajectory>
+         </script>
+      </actor>
+
+      <actor name="actor2">
+         <!-- xpos, ypos, xpos, xrot, yrot, zrot -->
+         <skin>
+            <filename>moonwalk.dae</filename>
+            <scale>1.0</scale>
+         </skin>
+         <animation name="walking">
+            <filename>walk.dae</filename>
+            <scale>1.000000</scale>
+            <interpolate_x>true</interpolate_x>
+         </animation>
+         <script>
+            <trajectory id="0" type="walking">
+               <waypoint>
+                  <time>0</time>
+                  <pose>5 -4 0 0 0 3.14</pose>
+               </waypoint>
+               <waypoint>
+                  <time>5</time>
+                  <pose>-5 -4 0 0 0 3.14</pose>
+               </waypoint>
+               <waypoint>
+                  <time>5.5</time>
+                  <pose>-5 -4 0 0 0 0</pose>
+               </waypoint>
+               <waypoint>
+                  <time>10.5</time>
+                  <pose>5 -4 0 0 0 0</pose>
+               </waypoint>
+               <waypoint>
+                  <time>11</time>
+                  <pose>5 -4 0 0 0 3.14</pose>
+               </waypoint>
+            </trajectory>
+         </script>
+      </actor>
+
+      <actor name="actor3">
+         <skin>
+            <filename>run.dae</filename>
+            <scale>1.0</scale>
+         </skin>
+         <animation name="walking">
+            <filename>run.dae</filename>
+            <scale>1.000000</scale>
+            <interpolate_x>true</interpolate_x>
+         </animation>
+         <script>
+            <trajectory id="0" type="walking">
+               <waypoint>
+                  <time>0</time>
+                  <pose>7 7 0 0 0 3.14</pose>
+               </waypoint>
+               <waypoint>
+                  <time>5</time>
+                  <pose>-7 7 0 0 0 3.14</pose>
+               </waypoint>
+               <waypoint>
+                  <time>5.5</time>
+                  <pose>-7 7 0 0 0 -1.57</pose>
+               </waypoint>
+               <waypoint>
+                  <time>10.5</time>
+                  <pose>-7 -7 0 0 0 -1.57</pose>
+               </waypoint>
+               <waypoint>
+                  <time>11</time>
+                  <pose>-7 -7 0 0 0 0</pose>
+               </waypoint>
+               <waypoint>
+                  <time>16</time>
+                  <pose>7 -7 0 0 0 0</pose>
+               </waypoint>
+               <waypoint>
+                  <time>16.5</time>
+                  <pose>7 -7 0 0 0 1.57</pose>
+               </waypoint>
+               <waypoint>
+                  <time>21.5</time>
+                  <pose>7 7 0 0 0 1.57</pose>
+               </waypoint>
+            </trajectory>
+         </script>
+      </actor>
+
+      <actor name="actor4">
+         <skin>
+            <filename>stand.dae</filename>
+            <scale>1.0</scale>
+         </skin>
+         <script>
+            <trajectory id="0" type="walking">
+               <waypoint>
+                  <time>0</time>
+                  <pose>5 -6 0 0 0 0</pose>
+               </waypoint>
+               <waypoint>
+                  <time>5</time>
+                  <pose>5 -6 0 0 0 0</pose>
+               </waypoint>
+               <waypoint>
+                  <time>5.5</time>
+                  <pose>5 -6 0 0 0 0</pose>
+               </waypoint>
+            </trajectory>
+         </script>
+      </actor>
+   </world>
+</sdf>
