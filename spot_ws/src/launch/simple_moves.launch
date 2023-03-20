@@ -1,0 +1,6 @@
+<launch>
+    <arg name="robot_name" default="spot1" />
+        <param name="spot_name" type="str" value="$(arg robot_name)" />
+        <rosparam file="$(find spot_ws)/src/config/forward_kinematics.yaml" command="load"/>
+        <node name="talker_forward" pkg="spot_ws" type="simple_moves.py" output="screen" ns="/$(arg robot_name)"/>
+</launch>
