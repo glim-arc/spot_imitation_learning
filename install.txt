@@ -8,3 +8,8 @@ pip install open3d
 
 sudo apt install python-is-python3
 export PYTHONPATH="/opt/ros/noetic/lib/python3.8/dist-packages:$PYTHONPATH"
+
+sudo setcap -r /usr/bin/python3
+sudo apt install python-is-python3
+sudo apt-get update
+sudo apt-get install ros-noetic-ros-control ros-noetic-ros-controllers
