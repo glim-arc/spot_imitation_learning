@@ -5,7 +5,8 @@
 -       Train the spot robot imitation learning policy to navigate using only RGBD
 -       Process depth from the stereo
 
-Data parsing:
+
+# Data parsing:
 Inside the data directory, make a bag directory and put the bag files there. run data_parser.py outside and the parsed data will be created in the bag directory.
 Please check the requirement.txt in the data folder to meet the requirement. 
 
@@ -20,6 +21,7 @@ https://www.cs.utexas.edu/~xiao/SCAND/SCAND.html
 
 Dataset:
 https://dataverse.tdl.org/dataset.xhtml?persistentId=doi:10.18738/T8/0PRYRH
+
 
 # Simulation tools for Boston Dynamics' Spot
 
