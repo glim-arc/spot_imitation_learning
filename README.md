@@ -42,7 +42,10 @@ This launches a world with several humans walking or running around an empty wor
 ```bash
 roslaunch spot_ws robot.launch
 ```
-This spawns the spot robot into the world. 
+This spawns the spot robot into the world. If there is a "No module named 'rospkg'", make sure you are using python3 and run the following command: 
+```bash
+sudo apt install python-is-python3"
+```
 
 ### Simple Moves
 ```bash
