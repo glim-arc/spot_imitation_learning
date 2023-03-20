@@ -6,7 +6,7 @@
 -       Process depth from the stereo
 
 
-# Data parsing:
+## Data parsing:
 Inside the data directory, make a bag directory and put the bag files there. run data_parser.py outside and the parsed data will be created in the bag directory.
 Please check the requirement.txt in the data folder to meet the requirement. 
 
@@ -23,28 +23,28 @@ Dataset:
 https://dataverse.tdl.org/dataset.xhtml?persistentId=doi:10.18738/T8/0PRYRH
 
 
-# Simulation tools for Boston Dynamics' Spot
+## Simulation tools for Boston Dynamics' Spot
 
 The Spot package, model and basic control inputs, is based on [SpotMicro project](https://github.com/OpenQuadruped/spot_mini_mini) and [SpotControl](https://github.com/SoftServeSAG/spot_simulation/tree/spot_control)
 
-## Installation
+### Installation
 This simulation uses ROS-Noetic and Gazebo. You will need to have a catkin_ws 
 
 Run catkin_make and source devel/setup.bash before starting simulation 
 
-## Start world in Gazebo
+### Start world in Gazebo
 ```bash
 roslaunch spot_ws humanworld.launch
 ```
 This launches a world with several humans walking or running around an empty world. The file humans.world can be edited to add/ remove move humans. These models are spawned animated humans based on [Gazebo Animated Actor Tutorial](https://classic.gazebosim.org/tutorials?tut=actor&cat=build_robot)
 
-## Spawn Spot robot
+### Spawn Spot robot
 ```bash
 roslaunch spot_ws robot.launch
 ```
 This spawns the spot robot into the world. 
 
-# Simple Moves
+### Simple Moves
 ```bash
 roslaunch spot_ws simple_moves.launch
 ```
