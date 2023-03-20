@@ -51,4 +51,8 @@ sudo apt install python-is-python3"
 ```bash
 roslaunch spot_ws simple_moves.launch
 ```
-This is a simple node that makes robot perform several actions such as standing up, sitting down or giving the left paw. The resources above will be used to write more complex algorithms to move the robot. 
+This is a simple node that makes robot perform several actions such as standing up, sitting down or giving the left paw. The resources above will be used to write more complex algorithms to move the robot. If you get this error: ROS-Gazebo Failed to load joint_state_controller when running robot.launch. Run the following commands:
+```bash
+sudo apt-get update
+sudo apt-get install ros-noetic-ros-control ros-noetic-ros-controllers
+```
