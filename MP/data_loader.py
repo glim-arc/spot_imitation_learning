@@ -28,6 +28,9 @@ def load_obs_from_lidar(path):
         print(curpcl)
         curpclpath = os.path.join(path, str(curpcl)+".pcd")
         cur_obs = parse_lidar(curpclpath)
+        if len(cur_obs) == 1:
+            if cur_obs[0][0] == 0 and cur_obs[0][1] == 0 and cur_obs[0][2] == 0:
+                cur_obs = None
         obs_list.append(cur_obs)
     print("End pcl parsing")
 

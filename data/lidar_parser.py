@@ -32,7 +32,10 @@ def parse_lidar(path):
         labels = np.array(
             pcd.cluster_dbscan(eps=0.4, min_points=50, print_progress=False))
 
-    max_label = labels.max()
+    max_label = 0
+    if len(labels) > 0:
+        max_label = labels.max()
+
     clustered_point = [[] for i in range(max_label+1)]
     center = [[] for i in range(max_label+1)]
 
