@@ -15,6 +15,8 @@ class Bag:
         self.twist_angular = twist_angular
         self.pcl_time = pcl_time
         self.obs_list = obs_list #list
+        self.goal = pos[-1]
+
 def load_obs_from_lidar(path):
     pcl_list = os.listdir(path)
     time = [float(curpcl[:-4]) for curpcl in pcl_list]
@@ -44,9 +46,9 @@ def load_dynamical_inputs(path):
 
     time = np.array(df['Time'])
     pos = np.array([df['pose.pose.position.x'],df['pose.pose.position.y'],df['pose.pose.position.z']])
-    ori = np.array([df['pose.pose.orientation.x'],df['pose.pose.orientation.y'],df['pose.pose.orientation.z']])
+    ori = np.array([df['pose.pose.orientation.x'],df['pose.pose.orientation.y'],df['pose.pose.orientation.z'], df['pose.pose.orientation.w']])
     twist_lin = np.array([df['twist.twist.linear.x'],df['twist.twist.linear.y'],df['twist.twist.linear.z']])
-    twist_angular = np.array([df['twist.twist.linear.x'],df['twist.twist.linear.y'],df['twist.twist.linear.z']])
+    twist_angular = np.array([df['twist.twist.angular.x'],df['twist.twist.angular.y'],df['twist.twist.angular.z']])
 
     print("odom loaded")
 
