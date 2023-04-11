@@ -8,8 +8,8 @@ def plot():
     
     #remove outlier
     for i, loss in enumerate(avg_loss_list):
-        if loss > avg_loss_list[0]*1.5:
-            avg_loss_list[i] = avg_loss_list[0]
+        if loss > avg_loss_list[0]*2:
+            avg_loss_list[i] = 0.5
 
     plt.figure()
     epoch = np.arange(1, len(avg_loss_list) + 1)

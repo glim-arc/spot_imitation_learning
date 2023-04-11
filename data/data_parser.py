@@ -14,7 +14,6 @@ from cv_bridge import CvBridge
 from bagpy import bagreader
 from depth import Depth
 from sensor_msgs.msg import LaserScan
-import laser_geometry.laser_geometry as lg
 import open3d
 import numpy as np
 from ctypes import * # convert float to uint32
@@ -22,7 +21,7 @@ from sensor_msgs.msg import PointCloud2, PointField
 import sensor_msgs.point_cloud2 as pc2
 
 
-depth_calc = True
+depth_calc = False
 visualization = False
 
 def main():
@@ -83,7 +82,6 @@ def main():
         #parse LiDAR scan
         cnt = 0
         curcloud = open3d.geometry.PointCloud()
-        lp = lg.LaserProjection()
         
         for topic, msg, t in bag.read_messages(lidar_topic):
             # Get cloud data from ros_cloud

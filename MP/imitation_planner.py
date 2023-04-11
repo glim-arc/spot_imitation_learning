@@ -15,16 +15,15 @@ class ImitationPlanner(nn.Module):
     def __init__(self, input_size, output_size):
         super().__init__()
         self.fc = nn.Sequential(
-            nn.Linear(input_size, 1280),nn.PReLU(),nn.Dropout(),
-            nn.Linear(1280, 1024),nn.PReLU(),nn.Dropout(),
-            nn.Linear(1024, 896),nn.PReLU(),nn.Dropout(),
-            nn.Linear(896, 768),nn.PReLU(),nn.Dropout(),
-            nn.Linear(768, 512),nn.PReLU(),nn.Dropout(),
-            nn.Linear(512, 384),nn.PReLU(),nn.Dropout(),
-            nn.Linear(384, 256),nn.PReLU(), nn.Dropout(),
-            nn.Linear(256, 256),nn.PReLU(), nn.Dropout(),
-            nn.Linear(256, 128),nn.PReLU(), nn.Dropout(),
-            nn.Linear(128, 64),nn.PReLU(), nn.Dropout(),
+            nn.Linear(input_size, 2048),nn.PReLU(),
+            nn.Linear(2048, 1024),nn.PReLU(),nn.Dropout(),
+            nn.Linear(1024, 896),nn.PReLU(),
+            nn.Linear(896, 768),nn.PReLU(),
+            nn.Linear(768, 512),nn.PReLU(),
+            nn.Linear(512, 384),nn.PReLU(),
+            nn.Linear(384, 256),nn.PReLU(),
+            nn.Linear(256, 128),nn.PReLU(),
+            nn.Linear(128, 64),nn.PReLU(),
             nn.Linear(64, 32),nn.PReLU(),
             nn.Linear(32, output_size))
 
@@ -114,6 +113,7 @@ def train(args):
     num_epochs = args.num_epochs
     current_path = args.current_path
     data_path = args.data_path
+    torch.manual_seed(args.seed)
 
     #initialize planner neural network
     device = args.device
@@ -122,7 +122,7 @@ def train(args):
     #load data
     bag_list = load_dataset(load_pickle=True)
     
-    optimizer = torch.optim.Adam(planner.parameters())
+    optimizer = torch.optim.Adam(planner.parameters(), lr=args.lr)
     
     torch_bags = dataloader(args.max_obs,bag_list, input_size, output_size, device, batchsize)
     
@@ -131,6 +131,7 @@ def train(args):
 
     print("env loaded")
     print("training starts")
+    print("num bags", len(torch_bags))
     
     for epoch in range(num_epochs):
         print ("epoch" + str(epoch))
@@ -192,8 +193,10 @@ if __name__ == '__main__':
     obstacle_size = 8 * 3 
     input_size = obstacle_size + 6 + 4 #obstacles in environment and start, goal, ori
     output_size = 6 #twist (linear and angular velocity)
-    batchsize = 2000
-    num_epochs = 3000
+    batchsize = 4000
+    num_epochs = 4000
+    lr=0.0001
+    seed = 0
     
     parser = argparse.ArgumentParser()
 
@@ -207,6 +210,8 @@ if __name__ == '__main__':
     parser.add_argument('--output_size', type=int, default=output_size)
     parser.add_argument('--batchsize', type=int, default=batchsize)
     parser.add_argument('--num_epochs', type=int, default=num_epochs)
+    parser.add_argument('--lr', type=int, default=lr)
+    parser.add_argument('--seed', type=int, default=seed)
     
     args = parser.parse_args()
     
