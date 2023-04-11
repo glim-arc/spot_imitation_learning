@@ -36,10 +36,18 @@ def parse_lidar(path):
     if len(labels) > 0:
         max_label = labels.max()
 
+    if len(labels) == 0 or max_label < 0:
+        print("point cloud has no clusters")
+        return None
+
     clustered_point = [[] for i in range(max_label+1)]
     center = [[] for i in range(max_label+1)]
 
+    print(max_label)
+
     for i, label_num in enumerate(labels):
+        if label_num < 0:
+            continue
         clustered_point[label_num].append(i)
 
     boxes = []
