@@ -9,6 +9,7 @@ from MP.data_loader import load_dataset, Bag
 import numpy as np
 from torch.utils.data import TensorDataset
 from torch.utils.data import DataLoader
+import argparse
 
 class ImitationPlanner(nn.Module):
     def __init__(self, input_size, output_size):
@@ -53,7 +54,7 @@ def match_arrays(odom_time_list, pcl_time_list, obs_list):
 
     return obs_list_new
 
-def dataloader(bag_list, input_size, output_size, obstacle_size, device, batchsize):
+def dataloader(max_obs, bag_list, input_size, output_size, device, batchsize):
     dataset = []
     for bag in bag_list:
         name = bag.name
@@ -81,7 +82,7 @@ def dataloader(bag_list, input_size, output_size, obstacle_size, device, batchsi
             if obs == None:
                 obs = []
 
-            num_empty = 8-len(obs)
+            num_empty = max_obs -len(obs)
 
             for j in range(num_empty):
                 obs.append([-1.0,-1.0,-1.0])
@@ -105,15 +106,17 @@ def dataloader(bag_list, input_size, output_size, obstacle_size, device, batchsi
     return dataset
 
 
-def train():
-    obstacle_size = 8 * 3 
-    input_size = obstacle_size + 6 + 4 #obstacles in environment and start, goal, ori
-    output_size = 6 #twist (linear and angular velocity)
-    batchsize = 30
-    num_epochs =1000
+def train(args):
+    obstacle_size = args.obstacle_size
+    input_size = args.input_size
+    output_size = args.output_size
+    batchsize = args.batchsize
+    num_epochs = args.num_epochs
+    current_path = args.current_path
+    data_path = args.data_path
 
-    #initialize policy neural network
-    device = "cpu"
+    #initialize planner neural network
+    device = args.device
     planner = ImitationPlanner(input_size, output_size).to(device)
 
     #load data
@@ -121,18 +124,17 @@ def train():
     
     optimizer = torch.optim.Adam(planner.parameters())
     
-    torch_bags = dataloader(bag_list, input_size, output_size, obstacle_size, device, batchsize)
+    torch_bags = dataloader(args.max_obs,bag_list, input_size, output_size, device, batchsize)
     
     mse_loss = nn.MSELoss()
     avg_loss_list = []
 
     print("env loaded")
+    print("training starts")
     
     for epoch in range(num_epochs):
         print ("epoch" + str(epoch))
         avg_loss=0
-        print("training starts")
-
         counter = 0
 
         for i, curbag in enumerate(torch_bags):
@@ -152,15 +154,60 @@ def train():
 
                 counter += 1
 
-        print ("--average loss:")
-        avg_loss = avg_loss/counter
-        print (avg_loss)
-        avg_loss_list.append(avg_loss.cpu().numpy())
-        
-        
-def planner():
-    pos,ori,twist_lin, goal = None
+        avg_loss = avg_loss.cpu().numpy()/counter
+        print ("--average loss:", avg_loss)
+        avg_loss_list.append(avg_loss)
     
-    return pos,ori,twist_lin, goal
-            
-train()
+    torch.save(planner.state_dict(),os.path.join(data_path,'planner.model'))
+    np.save(os.path.join(data_path,'avg_loss_list.npy'), avg_loss_list)
+        
+        
+def planner(args, curpos,ori,goal,obs):
+    device = args.device
+    current_path = args.current_path
+    data_path = args.data_path
+    
+    model = torch.load(os.path.join(data_path,'planner.model'))
+    planner = ImitationPlanner(input_size, output_size).to(device)
+
+    curpos = curpos.tolist()
+    ori = ori.tolist()
+    goal = goal.tolist()
+    obs = obs.tolist()
+    
+    cur_input = curpos + ori + goal + obs
+    cur_input = np.array(cur_input).astype(np.float32)
+    cur_input = torch.from_numpy(cur_input).float().to(device)
+    
+    cur_planner_output = planner(cur_input)
+    
+    twist_lin = cur_planner_output[:3]
+    twist_angular = cur_planner_output[3:]
+    
+    return twist_lin, twist_angular
+
+if __name__ == '__main__':
+    current_path = os.getcwd()
+    data_path = os.path.join(current_path, "data")
+    obstacle_size = 8 * 3 
+    input_size = obstacle_size + 6 + 4 #obstacles in environment and start, goal, ori
+    output_size = 6 #twist (linear and angular velocity)
+    batchsize = 2000
+    num_epochs = 3000
+    
+    parser = argparse.ArgumentParser()
+
+	# mpnet training data generation
+    parser.add_argument('--device', type=str, default="cuda")
+    parser.add_argument('--current_path', type=str, default=current_path)
+    parser.add_argument('--data_path', type=str, default=data_path)
+    parser.add_argument('--obstacle_size', type=int, default=obstacle_size)
+    parser.add_argument('--max_obs', type=int, default=8)
+    parser.add_argument('--input_size', type=int, default=input_size)
+    parser.add_argument('--output_size', type=int, default=output_size)
+    parser.add_argument('--batchsize', type=int, default=batchsize)
+    parser.add_argument('--num_epochs', type=int, default=num_epochs)
+    
+    args = parser.parse_args()
+    
+    train(args)
