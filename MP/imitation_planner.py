@@ -173,7 +173,7 @@ def train(args):
     np.save(os.path.join(data_path,'avg_loss_list.npy'), avg_loss_list)
         
         
-def planner(args, cur_input):
+def planner(args, curpos, ori, goal, obs):
     device = args.device
     current_path = args.current_path
     data_path = args.data_path
@@ -188,12 +188,16 @@ def planner(args, cur_input):
     
     cur_input = curpos + ori + goal + obs
     cur_input = np.array(cur_input).astype(np.float32)
+    cur_input =  np.expand_dims(cur_input, axis=0)
     cur_input = torch.from_numpy(cur_input).float().to(device)
+    print(cur_input.shape)
     
-    cur_planner_output = planner(cur_input)
+    cur_planner_output = planner(cur_input)[0]
     
-    twist_lin = cur_planner_output[:3]
-    twist_angular = cur_planner_output[3:]
+    twist_lin = cur_planner_output[:3].cpu().detach().numpy()
+    twist_angular = cur_planner_output[3:].cpu().detach().numpy()
+    
+    print(twist_lin, twist_angular)
     
     return twist_lin, twist_angular
 
@@ -225,4 +229,5 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     
-    train(args)
+    planner(args, np.zeros(3), np.zeros(4), np.zeros(3), np.zeros(24))
+    #train(args)
