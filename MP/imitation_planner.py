@@ -152,9 +152,9 @@ def train(args):
             for batch_idx, batch in enumerate(curbag):
                 optimizer.zero_grad()
                 planner.zero_grad()
+                planner.train()
                 cur_batch = batch[0].to(device)
                 cur_real_output = batch[1].to(device)
-
                 # ===================forward=====================
                 cur_planner_output = planner(cur_batch)
                 loss = mse_loss(cur_planner_output, cur_real_output)
@@ -173,13 +173,13 @@ def train(args):
     np.save(os.path.join(data_path,'avg_loss_list.npy'), avg_loss_list)
         
         
-def planner(args, curpos,ori,goal,obs):
+def planner(args, cur_input):
     device = args.device
     current_path = args.current_path
     data_path = args.data_path
     
     model = torch.load(os.path.join(data_path,'planner.model'))
-    planner = ImitationPlanner(input_size, output_size).to(device)
+    planner = ImitationPlanner(input_size, output_size).to(device).eval()
 
     curpos = curpos.tolist()
     ori = ori.tolist()
