@@ -38,7 +38,7 @@ Relocate the spot_ws inside the src folder inside your catkin workspace
 source devel/setup.bash
 roslaunch spot_ws humanworld.launch
 ```
-This launches a world with several humans walking or running around an empty world. The file humans.world can be edited to add/ remove move humans. These models are spawned animated humans based on [Gazebo Animated Actor Tutorial](https://classic.gazebosim.org/tutorials?tut=actor&cat=build_robot)
+This launches a world with several humans walking or running around an empty world. The file humans.world can be edited to add/ remove more humans. These models are spawned animated humans based on [Gazebo Animated Actor Tutorial](https://classic.gazebosim.org/tutorials?tut=actor&cat=build_robot)
 
 ### Spawn Spot robot
 ```bash
@@ -50,13 +50,30 @@ This spawns the spot robot into the world. If there is a "No module named 'rospk
 sudo apt install python-is-python3"
 ```
 
-### Simple Moves
+### To make robot move
+This is a simple node that makes robot perform several actions such as standing up, sitting down or giving the left paw. The resources mentioned above will be used to write more complex algorithms to move the robot.
 ```bash
 source devel/setup.bash
 roslaunch spot_ws simple_moves.launch
 ```
-This is a simple node that makes robot perform several actions such as standing up, sitting down or giving the left paw. The resources above will be used to write more complex algorithms to move the robot. If you get this error: ROS-Gazebo Failed to load joint_state_controller when running robot.launch. Run the following commands:
+ If you get this error: ROS-Gazebo Failed to load joint_state_controller when running robot.launch. Run the following commands:
 ```bash
 sudo apt-get update
 sudo apt-get install ros-noetic-ros-control ros-noetic-ros-controllers
 ```
+To subscribe to all robot joints, run the following commands in a new terminal
+```bash
+source devel/setup.bash
+roslaunch spot_ws inverse.launch
+```
+And to connect the controler for spot, run the next commands in a new terminal
+```bash
+source devel/setup.bash
+roslaunch spot_ws quadruped_controller.launch
+```
+
+Finally to run the full simulation along with the NN, you will first need to run the following launch files: humanworld.launch, robot.launch, inverse.launch, quadruped_controller.launch. Then to move spot, theres three different files that can be used:
+1. main.py: this one inputs the simulation humans positions and spot current location and orientation, as well as desired goal (manually set) and publishes the twist msg to the robot using trained model outputs
+2. main2.py: this one inputs the bag inputs into the trained model and publishes twist msg to spot from trained model outputs
+3. main3.py: reads real twist values from odom.csv file and publishes to spot
+
