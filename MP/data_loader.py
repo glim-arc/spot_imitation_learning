@@ -5,7 +5,7 @@ import csv
 import pandas as pd
 import sys
 sys.path.append(os.path.join(os.getcwd(), "data"))
-from data.lidar_parser import parse_lidar
+#from data.lidar_parser import parse_lidar
 import pickle
 
 class Bag:

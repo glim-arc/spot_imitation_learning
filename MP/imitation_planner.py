@@ -5,6 +5,7 @@ from torch import nn
 import os
 import sys
 sys.path.append(os.getcwd())
+print(os.getcwd())
 from MP.data_loader import load_dataset, Bag
 import numpy as np
 from torch.utils.data import TensorDataset
@@ -86,7 +87,15 @@ def dataloader(max_obs, bag_list, input_size, output_size, device, batchsize):
             ori = ori_list[i].tolist()
             twist_lin = twist_lin_list[i].tolist()
             twist_angular = twist_angular_list[i].tolist()
-            goal = pos_list[-1].tolist()
+            
+            time = i + 20
+            
+            if time >= len(pos_list):
+                time = len(pos_list) -1
+            
+            goal = pos_list[time].tolist()
+            
+            #goal = pos_list[-1].tolist()
 
             if obs == None:
                 obs = []
@@ -154,6 +163,7 @@ def train(args):
                 planner.zero_grad()
                 planner.train()
                 cur_batch = batch[0].to(device)
+                #print(cur_batch[0])
                 cur_real_output = batch[1].to(device)
                 # ===================forward=====================
                 cur_planner_output = planner(cur_batch)
@@ -229,5 +239,5 @@ if __name__ == '__main__':
     
     args = parser.parse_args()
     
-    planner(args, np.zeros(3), np.zeros(4), np.zeros(3), np.zeros(24))
-    #train(args)
+    #planner(args, np.zeros(3), np.zeros(4), np.zeros(3), np.zeros(24))
+    train(args)
