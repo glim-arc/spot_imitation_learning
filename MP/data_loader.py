@@ -5,7 +5,7 @@ import csv
 import pandas as pd
 import sys
 sys.path.append(os.path.join(os.getcwd(), "data"))
-#from data.lidar_parser import parse_lidar
+from lidar_parser import parse_lidar
 import pickle
 
 class Bag:
@@ -58,15 +58,23 @@ def load_dynamical_inputs(path):
 
     return time, pos, ori, twist_lin, twist_angular
 
-def load_dataset(load_pickle):
+def load_dataset(load_pickle, bag_path):
     current_path = os.getcwd()
     data_path = os.path.join(current_path, "data")
-    bag_path = os.path.join(data_path, "bag")
+    
     bagfilelist = os.listdir(bag_path)
     temp = []
+    
+    print(bag_path[-3:])
+    
+    loadtype = "train"
+    if bag_path[-3:] != "bag":
+        loadtype = "val"
+    
+    print(loadtype)
+    pickle_path = os.path.join(data_path, "bag_list_"+str(loadtype)+".pickle")
 
     if load_pickle:
-        pickle_path = os.path.join(data_path, "bag_list_7.pickle")
         with open(pickle_path, 'rb') as f:
             bag_list = pickle.load(f)
             print("parsed bag loaded")
@@ -106,9 +114,8 @@ def load_dataset(load_pickle):
 
         bag_list.append(Bag(bagname,odom_time, pos, ori, twist_lin, twist_angular,pcl_time,obs_list))
 
-    print(max_obs)
+    print("max_obs: ", max_obs)
 
-    pickle_path = os.path.join(data_path, 'bag_list_' + str(max_obs) +'.pickle')
     with open(pickle_path, 'wb') as f:
         pickle.dump(bag_list, f, pickle.HIGHEST_PROTOCOL)
     

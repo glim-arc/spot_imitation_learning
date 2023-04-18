@@ -2,9 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-def plot():
-    model_path = "./"
-    avg_loss_list = np.load(os.path.join(model_path,'avg_loss_list.npy'))
+def plot(avg_loss_list_path):
+    avg_loss_list = np.load(os.path.join(avg_loss_list_path,'avg_loss_list.npy'))
     
     #remove outlier
     for i, loss in enumerate(avg_loss_list):
@@ -17,7 +16,9 @@ def plot():
     plt.ylabel('Average Loss')
     plt.xlabel('Epoch')
     plt.title('Average Loss for ' + str(len(avg_loss_list)) + " epoch")
-    plt.savefig(os.path.join(model_path,'avg_loss_list.jpg'), dpi=200)
+    plt.savefig(os.path.join(avg_loss_list_path,'avg_loss_list.jpg'), dpi=200)
     plt.show()
 
-plot()
+if __name__ == '__main__':
+    avg_loss_list_path = "./"
+    plot(avg_loss_list_path)

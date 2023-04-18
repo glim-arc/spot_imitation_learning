@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 def parse_lidar(path):
     #curcloud = open3d.io.read_point_cloud("./1636570668.255584.pcd")
     curcloud = open3d.io.read_point_cloud(path)
+    #open3d.visualization.draw_geometries([curcloud])
 
     #turn off debug
     open3d.utility.set_verbosity_level(open3d.utility.VerbosityLevel.Error)
@@ -17,6 +18,8 @@ def parse_lidar(path):
     bounding_box = open3d.geometry.AxisAlignedBoundingBox.create_from_points(
     open3d.utility.Vector3dVector(box_section))
     curcloud = curcloud.crop(bounding_box)
+    
+    #open3d.visualization.draw_geometries([curcloud])
 
     #stat_outlier
     cropped_cloud, in_pts = curcloud.remove_statistical_outlier(nb_neighbors=200, std_ratio=1.6)

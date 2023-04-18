@@ -5,37 +5,41 @@ from torch import nn
 import os
 import sys
 sys.path.append(os.getcwd())
+sys.path.append(os.path.join(os.getcwd(), "data"))
 print(os.getcwd())
 from MP.data_loader import load_dataset, Bag
+from plot import plot
 import numpy as np
 from torch.utils.data import TensorDataset
 from torch.utils.data import DataLoader
 import argparse
 
 class ImitationPlanner(nn.Module):
-    def __init__(self, input_size, output_size):
+    def __init__(self, input_size, output_size, p):
         super().__init__()
-        p = 0.2
         self.fc = nn.Sequential(
-            nn.Linear(input_size, 1280),nn.PReLU(),nn.Dropout(p=p),
-            nn.BatchNorm1d(1280),
-            nn.Linear(1280, 1024),nn.PReLU(),nn.Dropout(p=p),
-            nn.BatchNorm1d(1024),
-            nn.Linear(1024, 896),nn.PReLU(),nn.Dropout(p=p),
-            nn.BatchNorm1d(896),
-            nn.Linear(896, 768),nn.PReLU(),nn.Dropout(p=p),
-            nn.BatchNorm1d(768),
-            nn.Linear(768, 512),nn.PReLU(),nn.Dropout(p=p),
-            nn.BatchNorm1d(512),
-            nn.Linear(512, 384),nn.PReLU(),nn.Dropout(p=p),
-            nn.BatchNorm1d(384),
-            nn.Linear(384, 256),nn.PReLU(), nn.Dropout(p=p),
-            nn.BatchNorm1d(256),
-            nn.Linear(256, 128),nn.PReLU(), nn.Dropout(p=p),
-            nn.BatchNorm1d(128),
-            nn.Linear(128, 64),nn.PReLU(), nn.Dropout(p=p),
-            nn.BatchNorm1d(64),
-            nn.Linear(64, 32),nn.PReLU(), nn.Dropout(p=p),
+            # nn.Linear(input_size, 1280),nn.PReLU(),nn.Dropout(p=p),
+            # nn.BatchNorm1d(1280),
+            # nn.Linear(1280, 1024),nn.PReLU(),nn.Dropout(p=p),
+            # nn.BatchNorm1d(1024),
+            # nn.Linear(1024, 896),nn.PReLU(),nn.Dropout(p=p),
+            # nn.BatchNorm1d(896),
+            # nn.Linear(896, 768),nn.PReLU(),nn.Dropout(p=p),
+            # nn.BatchNorm1d(768),
+            # nn.Linear(768, 512),nn.PReLU(),nn.Dropout(p=p),
+            # nn.BatchNorm1d(512),
+            # nn.Linear(512, 384),nn.PReLU(),nn.Dropout(p=p),
+            # nn.BatchNorm1d(384),
+            # nn.Linear(384, 256),nn.PReLU(), nn.Dropout(p=p),
+            # nn.BatchNorm1d(256),
+            # nn.Linear(256, 128),nn.PReLU(), nn.Dropout(p=p),
+            # nn.BatchNorm1d(128),
+            # nn.Linear(128, 64),nn.PReLU(), nn.Dropout(p=p),
+            # nn.BatchNorm1d(64),
+            nn.Linear(input_size, 48),nn.PReLU(), nn.Dropout(p=p),
+            nn.BatchNorm1d(48),
+            nn.Linear(48, 32),nn.PReLU(), nn.Dropout(p=p),
+            nn.BatchNorm1d(32),
             nn.Linear(32, output_size))
 
     def forward(self, x):
@@ -88,7 +92,7 @@ def dataloader(max_obs, bag_list, input_size, output_size, device, batchsize):
             twist_lin = twist_lin_list[i].tolist()
             twist_angular = twist_angular_list[i].tolist()
             
-            time = i + 20
+            time = i + 40
             
             if time >= len(pos_list):
                 time = len(pos_list) -1
@@ -123,6 +127,82 @@ def dataloader(max_obs, bag_list, input_size, output_size, device, batchsize):
 
     return dataset
 
+def validation(args):
+    obstacle_size = args.obstacle_size
+    input_size = args.input_size
+    output_size = args.output_size
+    batchsize = args.batchsize
+    num_epochs = args.num_epochs
+    current_path = args.current_path
+    data_path = args.data_path
+    torch.manual_seed(args.seed)
+
+    #initialize planner neural network
+    device = args.device
+    planner = ImitationPlanner(input_size, output_size, p=0.8).to(device)
+    #model_path = os.path.join(data_path,'p=0.8, +50/planner.model')
+    model_path = os.path.join(data_path,"planner.model")
+    trained = torch.load(model_path)
+    planner.load_state_dict(trained)
+
+    #load data
+    print("Trained Bags")
+    bag_list = load_dataset(load_pickle=True, bag_path = args.bag_path)
+    torch_bags = dataloader(args.max_obs,bag_list, input_size, output_size, device, batchsize)
+    mse_loss = nn.MSELoss()
+    print("bag num", len(bag_list))
+    
+    avg_loss=[]
+
+    for i, curbag in enumerate(torch_bags):
+        curbag_loss = []
+        for batch_idx, batch in enumerate(curbag):
+            planner.zero_grad()
+            planner.train()
+            cur_batch = batch[0].to(device)
+            #print(cur_batch[0])
+            cur_real_output = batch[1].to(device)
+            # ===================forward=====================
+            cur_planner_output = planner(cur_batch)
+            loss = mse_loss(cur_planner_output, cur_real_output)
+            print(loss)
+            curbag_loss.append(loss.cpu().detach().numpy())
+        avg_loss.append(sum(curbag_loss)/len(curbag_loss))
+
+    avg_loss = sum(avg_loss)/len(avg_loss)
+
+    val_loss = avg_loss
+    print ("--validation loss:", val_loss)
+    
+    print("Untrained Bags")
+    bag_list = load_dataset(load_pickle=True, bag_path = args.val_path)
+    torch_bags = dataloader(args.max_obs,bag_list, input_size, output_size, device, batchsize)
+    print("bag num", len(bag_list))
+    
+    avg_loss=[]
+
+    for i, curbag in enumerate(torch_bags):
+        curbag_loss = []
+        for batch_idx, batch in enumerate(curbag):
+            planner.zero_grad()
+            planner.train()
+            cur_batch = batch[0].to(device)
+            #print(cur_batch[0])
+            cur_real_output = batch[1].to(device)
+            # ===================forward=====================
+            cur_planner_output = planner(cur_batch)
+            loss = mse_loss(cur_planner_output, cur_real_output)
+            print(loss)
+            curbag_loss.append(loss.cpu().detach().numpy())
+        avg_loss.append(sum(curbag_loss)/len(curbag_loss))
+
+    avg_loss = sum(avg_loss)/len(avg_loss)
+    
+    val_loss = avg_loss
+    print ("--validation loss:", val_loss)
+    
+    np.save(os.path.join(data_path,"val_loss_"+ str(val_loss)+".npy"), val_loss)
+    
 
 def train(args):
     obstacle_size = args.obstacle_size
@@ -136,10 +216,10 @@ def train(args):
 
     #initialize planner neural network
     device = args.device
-    planner = ImitationPlanner(input_size, output_size).to(device)
+    planner = ImitationPlanner(input_size, output_size, p=0.7).to(device)
 
     #load data
-    bag_list = load_dataset(load_pickle=True)
+    bag_list = load_dataset(load_pickle=True, bag_path = args.bag_path)
     
     optimizer = torch.optim.Adam(planner.parameters(), lr=args.lr)
     
@@ -154,10 +234,10 @@ def train(args):
     
     for epoch in range(num_epochs):
         print ("epoch" + str(epoch))
-        avg_loss=0
-        counter = 0
+        avg_loss=[]
 
         for i, curbag in enumerate(torch_bags):
+            curbag_loss = []
             for batch_idx, batch in enumerate(curbag):
                 optimizer.zero_grad()
                 planner.zero_grad()
@@ -168,19 +248,20 @@ def train(args):
                 # ===================forward=====================
                 cur_planner_output = planner(cur_batch)
                 loss = mse_loss(cur_planner_output, cur_real_output)
-                avg_loss = avg_loss + loss.data
                 # ===================backward====================
                 loss.backward()
                 optimizer.step()
+                curbag_loss.append(loss.cpu().detach().numpy())
+            avg_loss.append(sum(curbag_loss)/len(curbag_loss))
 
-                counter += 1
-
-        avg_loss = avg_loss.cpu().numpy()/counter
+        avg_loss = sum(avg_loss)/len(avg_loss)
         print ("--average loss:", avg_loss)
         avg_loss_list.append(avg_loss)
     
     torch.save(planner.state_dict(),os.path.join(data_path,'planner.model'))
     np.save(os.path.join(data_path,'avg_loss_list.npy'), avg_loss_list)
+    plot(os.path.join(os.getcwd(), "data"))
+    
         
         
 def planner(args, curpos, ori, goal, obs):
@@ -189,7 +270,7 @@ def planner(args, curpos, ori, goal, obs):
     data_path = args.data_path
     
     model = torch.load(os.path.join(data_path,'planner.model'))
-    planner = ImitationPlanner(input_size, output_size).to(device).eval()
+    planner = ImitationPlanner(input_size, output_size, p= 1).to(device).eval()
 
     curpos = curpos.tolist()
     ori = ori.tolist()
@@ -214,11 +295,13 @@ def planner(args, curpos, ori, goal, obs):
 if __name__ == '__main__':
     current_path = os.getcwd()
     data_path = os.path.join(current_path, "data")
+    bag_path = os.path.join(data_path, "bag")
+    val_path = os.path.join(data_path, "validation_bags")
     obstacle_size = 8 * 3 
     input_size = obstacle_size + 6 + 4 #obstacles in environment and start, goal, ori
     output_size = 6 #twist (linear and angular velocity)
-    batchsize = 4000
-    num_epochs = 4000
+    batchsize = 500
+    num_epochs = 1000
     lr=0.0001
     seed = 0
     
@@ -228,6 +311,8 @@ if __name__ == '__main__':
     parser.add_argument('--device', type=str, default="cuda")
     parser.add_argument('--current_path', type=str, default=current_path)
     parser.add_argument('--data_path', type=str, default=data_path)
+    parser.add_argument('--bag_path', type=str, default=bag_path)
+    parser.add_argument('--val_path', type=str, default=val_path)
     parser.add_argument('--obstacle_size', type=int, default=obstacle_size)
     parser.add_argument('--max_obs', type=int, default=8)
     parser.add_argument('--input_size', type=int, default=input_size)
@@ -241,3 +326,4 @@ if __name__ == '__main__':
     
     #planner(args, np.zeros(3), np.zeros(4), np.zeros(3), np.zeros(24))
     train(args)
+    validation(args)

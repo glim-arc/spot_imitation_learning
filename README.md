@@ -22,6 +22,14 @@ python data_parser.py
 python depth_parser.py
 ```
 
+## Running the trainning and validation:
+Inside the data directory, there are planner models and bag pickles which are in a class called Bag with the necessary inputs.
+Imitation planner loades the parsed data and perform the training and validaiton.
+Run the following code in the root directory of the package.
+```bash
+python -m MP.imitation_planner
+```
+
 ## Simulation tools for Boston Dynamics' Spot
 
 The Spot package, model and basic control inputs, is based on [SpotMicro project](https://github.com/OpenQuadruped/spot_mini_mini) and [SpotControl](https://github.com/SoftServeSAG/spot_simulation/tree/spot_control)
