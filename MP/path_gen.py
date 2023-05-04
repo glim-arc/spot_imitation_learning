@@ -126,6 +126,7 @@ def dataloader(args, traj_path, max_obs, bag_list, input_size, output_size, devi
             new_obs = np.array(obs).flatten().tolist()
             new_goal = np.array(goal) - np.array(curpos)
             new_goal = new_goal.tolist()
+            print(new_goal)
             cur_input = new_goal + ori + new_obs
             cur_input = np.array(cur_input).astype(np.float32)
             
@@ -165,7 +166,8 @@ def validation(args):
     #initialize planner neural network
     device = args.device
     device = "cpu"
-    planner = ImitationPlanner(input_size, output_size, p=1).to(device)
+    planner = ImitationPlanner(input_size, output_size, p=0.4).to(device)
+    planner.eval()
     model_path = os.path.join(data_path,"planner.model")
     print(model_path)
     trained = torch.load(model_path, map_location=torch.device('cpu'))
@@ -232,7 +234,7 @@ def validation(args):
         for batch_idx, batch in enumerate(curbag):
             planner.zero_grad()
             cur_batch = batch[0].to(device).unsqueeze(0)
-            #print(cur_batch[0])
+            print(cur_batch[0])
             cur_real_output = batch[1].to(device)
             # ===================forward=====================
             cur_planner_output = planner(cur_batch)[0]
