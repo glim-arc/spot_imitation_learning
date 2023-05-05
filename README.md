@@ -45,8 +45,8 @@ The Spot package, model and basic control inputs, is based on [SpotMicro project
 All the simulation files are located under the spot_ws directory.
 
 ### Installation
-This simulation uses ROS-Noetic and Gazebo. You will need to have a catkin_ws
-Run catkin_make and source devel/setup.bash before starting simulation
+This simulation uses ROS-Noetic and Gazebo. You will need to have a catkin_ws.
+Run catkin_make and source devel/setup.bash before starting simulation.
 Relocate the spot_ws inside the src folder inside your catkin workspace
 
 ### Start world in Gazebo
@@ -54,7 +54,7 @@ Relocate the spot_ws inside the src folder inside your catkin workspace
 source devel/setup.bash
 roslaunch spot_ws humanworld.launch
 ```
-This launches a world with several humans walking or running around an empty world. The file humans.world can be edited to add/ remove more humans. These models are spawned animated humans based on [Gazebo Animated Actor Tutorial](https://classic.gazebosim.org/tutorials?tut=actor&cat=build_robot)
+This launches a world with several humans walking or running around an empty world. The file humans.world can be edited to add/ remove more humans. These models are spawned animated humans based on [Gazebo Animated Actor Tutorial](https://classic.gazebosim.org/tutorials?tut=actor&cat=build_robot). There's three worlds that can be used: fullHumans.world (has both humans and static obstacles), humans.world (only has humans), and boxes.world (has 8 different sized boxes to imitate large groups of people and 2 balls). Edit the launch file to change world. 
 
 ### Spawn Spot robot
 ```bash
@@ -89,7 +89,12 @@ roslaunch spot_ws quadruped_controller.launch
 ```
 
 Finally to run the full simulation along with the NN, you will first need to run the following launch files: humanworld.launch, robot.launch, inverse.launch, quadruped_controller.launch. Then to move spot, theres three different files that can be used:
-1. main.py: this one inputs the simulation humans positions and spot current location and orientation, as well as desired goal (manually set) and publishes the twist msg to the robot using trained model outputs
-2. main2.py: this one inputs the bag inputs into the trained model and publishes twist msg to spot from trained model outputs
-3. main3.py: reads real twist values from odom.csv file and publishes to spot
+1. main_spot.py: this one inputs the simulation humans positions and spot current location and orientation, as well as desired goal (manually set) and publishes the twist msg to the robot using trained model outputs
+2. main_comp.py: this file compares the sideways movement of the spot robot agains the red ball. 
+*The following files only need humanworld.launch to be launched
+3. main_ball.py: this one performs RRT from custom initial to goal locations. Then it inputs the RRT waypoints as local goals, the location of the humans in world, the current position and orientation of the red ball, and finally publishes the poses to the ball.
+4. main_ball2.py: this one works on the boxes.world. It inputs real obstacles position (of SCAND data) as well as the difference between the goal and the current position of the ball, and publishes poses of the ball. 
+5. main_pathTesting.py: this file takes in the real and generated paths from the model and publishes to Path msg (these can be visualized in RVIZ). 
+
+
 
