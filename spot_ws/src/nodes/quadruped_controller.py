@@ -92,10 +92,10 @@ class QuadrupedController:
                 self.LateralFraction = 0.0
         elif velocity_y > 0:
             self.StepLength = self.Tswing / 2 * velocity_y
-            self.LateralFraction = 1.0
+            self.LateralFraction = 1
         elif velocity_y < 0:
             self.StepLength = self.Tswing / 2 * abs(velocity_y)
-            self.LateralFraction = -1.0
+            self.LateralFraction = -1
 
         if vel.angular.z != 0.0 and velocity_x == 0.0:
             self.StepLength = 0.1
