@@ -2,7 +2,7 @@
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
-  <arg name="world" default="humans.world" />
+  <arg name="world" default="fullHumans.world" />
   <arg name="world_name" default= "$(find spot_ws)/src/worlds/$(arg world)" />
 
   <!-- Launch Gazebo with the specified world -->
@@ -14,5 +14,6 @@
     <arg name="world_name" value="$(arg world_name)" />
     <arg name="paused" value="false"/>
   </include>
+
 </launch>
 
